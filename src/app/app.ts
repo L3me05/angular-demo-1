@@ -4,18 +4,27 @@ type Alert = {
   message: string;
   type: 'primary' | 'danger' | 'success';
 }
+type Coords = {
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NgClass, NgStyle],
+  imports: [NgClass],
   template: `
-    <h1>Welcome {{title}}!</h1>
 
-    <button class="btn" (click)="dec()">-</button>
-    <button class="btn" (click)="inc()">+</button>
-    <br>
-    <img [src]="immagine1" alt="" [width]="width">
+    <div class="flex flex-col items-center justify-center p-8 gap-4">
+      <h1>Welcome {{title}}!</h1>
+
+      <div class="flex gap-2">
+        <button class="btn" (click)="dec()">-</button>
+        <button class="btn" (click)="inc()">+</button>
+      </div>
+
+      <img [src]="immagine1" alt="" [width]="width">
+    </div>
 
     <div
       class="alert"
@@ -24,11 +33,13 @@ type Alert = {
         'alert-error': alert.type === 'danger',
         'alert-success': alert.type === 'success',
       }"
+      (mousemove)="show($event)"
+      (mouseout)="hide()"
     >
       {{ alert.message }}
     </div>
 
-    <div class="flex gap-3">
+    <div class="flex gap-3 items-center justify-center p-2">
       <button
         class="btn"
         (click)="alert = {message: 'hello 1', type: 'primary'}"
@@ -41,6 +52,15 @@ type Alert = {
         class="btn"
         (click)="alert = {message: 'hello 3', type: 'success'}"
       >success</button>
+      <div class="ml-20">{{position?.x}} - {{position?.y}}</div>
+    </div>
+
+    <div class="absolute bg-gray-700 text-white p-3 rounded-3xl text-xs"
+    [style.left.px]="position?.x"
+    [style.top.px]="position?.y"
+    [hidden]="!position">
+
+      Tooltip
     </div>
 
   `,
@@ -61,6 +81,9 @@ export class App {
   width = 200;
 
 
+  position : Coords | null = null;
+
+
   alert : Alert = {
     type: 'primary',
     message: 'Ciao',
@@ -76,6 +99,17 @@ export class App {
     if(this.width < 1000) {
       this.width += 50;
     }
+
+  }
+  show(event: MouseEvent) {
+    this.position = {
+      x: event.clientX+10,
+      y: event.clientY+20
+    }
+  }
+
+  hide() {
+    this.position = null;
   }
 
 }
