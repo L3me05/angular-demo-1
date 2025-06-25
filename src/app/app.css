@@ -1,21 +1,2 @@
 @import "tailwindcss";
-.alert {
-  @apply border-4 border-black rounded-xl p-5 my-3
-}
-
-.alert-primary {
-  @apply bg-sky-600 text-white
-
-}
-
-.alert-danger {
-  @apply bg-red-600 text-white
-}
-
-.alert-success {
-  @apply bg-green-200 text-black
-}
-
-.btn {
-  @apply bg-red-500 text-white px-3 py-1 rounded;
-}
+@plugin "daisyui";

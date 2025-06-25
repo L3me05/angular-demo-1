@@ -20,8 +20,8 @@ type Alert = {
     <div
       class="alert"
       [ngClass]="{
-        'alert-primary': alert.type === 'primary',
-        'alert-danger': alert.type === 'danger',
+        'alert-info': alert.type === 'primary',
+        'alert-error': alert.type === 'danger',
         'alert-success': alert.type === 'success',
       }"
     >
