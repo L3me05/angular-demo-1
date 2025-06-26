@@ -27,7 +27,7 @@ type Coords = {
     </div>
 
     <div
-      class="alert"
+      class="alert m-6"
       [ngClass]="{
         'alert-info': alert.type === 'primary',
         'alert-error': alert.type === 'danger',
@@ -61,6 +61,12 @@ type Coords = {
     [hidden]="!position">
 
       Tooltip
+    </div>
+
+    <div class=" centered-page sm flex flex-col gap-3 border-1 rounded-2xl m-6 p-3">
+      <input type="text" placeholder="URL"
+             class="border-0 focus:outline-none focus:ring-0"
+             (keydown.enter)="KeydownHandler($event)">
     </div>
 
   `,
@@ -112,4 +118,13 @@ export class App {
     this.position = null;
   }
 
+  KeydownHandler($event: Event) {
+    const text = ($event.target as HTMLInputElement).value;
+    const urlRegex = /^(https?|ftp):\/\/[^\s\/$.?#].\S*$/i;
+    const isUrlValid = urlRegex.test(text);
+
+    if(isUrlValid) {
+      window.open(text);
+    }
+  }
 }
