@@ -1,5 +1,5 @@
-import {NgClass, NgStyle} from '@angular/common';
-import { Component } from '@angular/core';
+import {NgClass} from '@angular/common';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 type Alert = {
   message: string;
   type: 'primary' | 'danger' | 'success';
@@ -66,7 +66,7 @@ type Coords = {
     <div class=" centered-page sm flex flex-col gap-3 border-1 rounded-2xl m-6 p-3">
       <input type="text" placeholder="URL"
              class="border-0 focus:outline-none focus:ring-0"
-             (keydown.enter)="KeydownHandler($event)">
+             (keydown.enter)="KeydownHandler()" #inputUrl>
     </div>
 
   `,
@@ -81,14 +81,16 @@ type Coords = {
 })
 
 
-export class App {
+export class App implements AfterViewInit{
+  @ViewChild('inputUrl') inputUrl: ElementRef<HTMLInputElement> | undefined;
   protected title = 'Lemuel';
   immagine1 = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBjOPvLoIeIwnjqc-Lhfy_bvQy7s5rEU6ElA&s";
   width = 200;
-
-
   position : Coords | null = null;
 
+  ngAfterViewInit():void {
+    this.inputUrl?.nativeElement.focus();
+  }
 
   alert : Alert = {
     type: 'primary',
@@ -118,13 +120,15 @@ export class App {
     this.position = null;
   }
 
-  KeydownHandler($event: Event) {
-    const text = ($event.target as HTMLInputElement).value;
-    const urlRegex = /^(https?|ftp):\/\/[^\s\/$.?#].\S*$/i;
-    const isUrlValid = urlRegex.test(text);
+  KeydownHandler() {
+    const text = this.inputUrl?.nativeElement.value;
+    if(text) {
+      const urlRegex = /^(https?|ftp):\/\/[^\s\/$.?#].\S*$/i;
+      const isUrlValid = urlRegex.test(text);
+      if(isUrlValid) {
+        window.open(text);
+      }
 
-    if(isUrlValid) {
-      window.open(text);
     }
   }
 }
