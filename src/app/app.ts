@@ -32,11 +32,13 @@ type MenuItem = {
     <div class="flex flex-col items-center justify-center p-8 gap-4">
       <h1>Welcome {{title}}!</h1>
 
+<!--      zoom immagine-->
       <div class="flex gap-2">
         <button class="btn" (click)="dec()">-</button>
         <button class="btn" (click)="inc()">+</button>
       </div>
 
+<!--      contenitore immagini 1-->
       <img [src]="immagine" alt="" [width]="width">
       <div class="">
         <button class="btn" (click)="immagine='images/immagine1.jpeg'">1</button>
@@ -47,6 +49,20 @@ type MenuItem = {
       </div>
     </div>
 
+<!--    slider immagini-->
+    <div class="flex flex-col gap-3 items-center">
+      <h1>{{carusel.name}} {{carusel.images[currentIndex].label}}</h1>
+
+      <div class="flex gap-3 items-center">
+        <button class="btn" (click)="prev()">Prev</button>
+        <img [src]="carusel.images[currentIndex].path"
+             [alt]="carusel.images[currentIndex].label">
+        <button class="btn" (click)="next()">Next</button>
+      </div>
+    </div>
+
+
+<!--    alert che cambia-->
     <div
       class="alert m-6"
       [ngClass]="{
@@ -60,6 +76,7 @@ type MenuItem = {
       {{ alert.message }}
     </div>
 
+<!--    pulsanti per far cambiare alert-->
     <div class="flex gap-3 items-center justify-center p-2 ">
       <button
         class="btn"
@@ -76,6 +93,7 @@ type MenuItem = {
       <div class="ml-20">{{position?.x}} - {{position?.y}}</div>
     </div>
 
+<!--    tooltip-->
     <div class="absolute bg-gray-700 text-white p-3 rounded-3xl text-xs"
     [style.left.px]="position?.x"
     [style.top.px]="position?.y"
@@ -84,12 +102,14 @@ type MenuItem = {
       Tooltip
     </div>
 
+<!--    campo input che rimanda a un preciso url-->
     <div class=" centered-page sm flex flex-col gap-3 border-1 rounded-2xl m-6 p-3">
       <input type="text" placeholder="URL"
              class="border-0 focus:outline-none focus:ring-0"
              (keydown.enter)="KeydownHandler()" #inputUrl>
     </div>
 
+<!--    far vedere formattazione con pippe-->
     <div class="flex flex-row justify-center items-center">
       <div class="p-8 align-middle ">
         <p>Date1: {{today | date: 'gg-MM-yyyy'}}</p>
@@ -97,7 +117,7 @@ type MenuItem = {
         <p>{{value | number: '1.2-3'}}</p>
         <pre>{{user | json}}</pre>
       </div>
-
+      //lista con ciclo for
       <div class="px-4">
         <li
           *ngFor="let product of products; let i = index;">
@@ -107,6 +127,7 @@ type MenuItem = {
     </div>
 
 
+<!--    menù interattivo-->
     <div class="flex flex-col gap-4 p-4 m-8">
       <div class="flex justify-center gap-2 border-b-2 p-2">
         @for (item of menuItems; track item.section) {
@@ -158,6 +179,27 @@ export class App implements AfterViewInit{
   position : Coords | null = null;
   visible = true;
   section: Section = null;
+  currentIndex=0;
+  carusel = {
+    name: "immagineeee numero:",
+    images: [
+      { path:'images/immagine1.jpeg', label: 'immagine1' },
+      { path:'images/immagine2.jpeg', label: 'immagine2' },
+      { path:'images/immagine3.jpeg', label: 'immagine3' },
+      { path:'images/immagine4.jpeg', label: 'immagine4' },
+      { path:'images/immagine5.jpeg', label: 'immagine5' },
+      ]
+  }
+
+  prev() {
+    this.currentIndex = this.currentIndex > 0 ?
+      this.currentIndex - 1 : this.carusel.images.length - 1;
+  }
+
+  next() {
+    this.currentIndex = this.currentIndex < this.carusel.images.length - 1 ?
+      this.currentIndex + 1 : 0;
+  }
 
   ngAfterViewInit():void {
     this.inputUrl?.nativeElement.focus();
