@@ -23,6 +23,12 @@ type MenuItem = {
   label: string;
 }
 
+type Todo = {
+  id: number;
+  title: string;
+  done: boolean;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -117,7 +123,7 @@ type MenuItem = {
         <p>{{value | number: '1.2-3'}}</p>
         <pre>{{user | json}}</pre>
       </div>
-      //lista con ciclo for
+<!--      //lista con ciclo for-->
       <div class="px-4">
         <li
           *ngFor="let product of products; let i = index;">
@@ -159,6 +165,42 @@ type MenuItem = {
 
     </div>
 
+<!--    ToDoList -->
+    <div class="flex flex-col gap-8 p-6 justify-center items-center">
+      <h1>ToDoList</h1>
+      <input
+        type="text"
+        class="input input-bordered"
+        placeholder="Add new todo"
+        (keydown.enter)="addTodo(input)"
+        #input
+      >
+
+      <div class="flex flex-col gap-3">
+        @for (todo of todos; track todo.id) {
+          <div
+            class="flex items-center"
+            [ngClass]="{
+                'line-through' : todo.done
+            }"
+          >
+            <input
+              type="checkbox"
+              class="checkbox mr-2"
+              [checked]="todo.done"
+              (change)="toggleTodo(todo.id)"
+
+            >
+            {{ todo.title }}
+
+            <button class="btn ml-6 " (click)="removeTodo(todo.id)">Remove</button>
+          </div>
+        }
+      </div>
+
+
+    </div>
+
   `,
   styles: `
     h1{
@@ -173,7 +215,7 @@ type MenuItem = {
 
 export class App implements AfterViewInit{
   @ViewChild('inputUrl') inputUrl: ElementRef<HTMLInputElement> | undefined;
-  protected title = 'Lemuel';
+  title = 'Lemuel';
   immagine = "images/immagine1.jpeg";
   width = 200;
   position : Coords | null = null;
@@ -263,4 +305,35 @@ export class App implements AfterViewInit{
     {section: 'step2', label: 'Step2'},
     {section: 'final', label: 'Final'},
   ]
+
+  //ToDoList
+  todos : Todo[] = [
+    {id: 1, title: 'Buy milk', done: false},
+    {id: 2, title: 'Buy chocolate', done: true},
+    {id: 3, title: 'Buy biscuits', done: false},
+  ]
+
+  removeTodo(id: number) {
+    const index = this.todos.findIndex(todo => todo.id === id);
+    this.todos.splice(index, 1)
+  }
+
+  toggleTodo(id: number) {
+    const index = this.todos.findIndex(todo => todo.id === id);
+    this.todos[index].done = !this.todos[index].done;
+  }
+
+  addTodo(input: HTMLInputElement) {
+    const newTodo : Todo = {
+      id: Date.now(),
+      title: input.value,
+      done: false
+    }
+    this.todos.push(newTodo);
+    input.value = '';
+  }
+
+
+
+
 }
