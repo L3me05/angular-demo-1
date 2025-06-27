@@ -314,22 +314,31 @@ export class App implements AfterViewInit{
   ]
 
   removeTodo(id: number) {
-    const index = this.todos.findIndex(todo => todo.id === id);
-    this.todos.splice(index, 1)
+    // const index = this.todos.findIndex(todo => todo.id === id);
+    // this.todos.splice(index, 1)
+    this.todos = this.todos.filter(todo => todo.id !== id);
   }
 
   toggleTodo(id: number) {
-    const index = this.todos.findIndex(todo => todo.id === id);
-    this.todos[index].done = !this.todos[index].done;
+    // const index = this.todos.findIndex(todo => todo.id === id);
+    // this.todos[index].done = !this.todos[index].done;
+    this.todos = this.todos.map( todo  => {
+      return todo.id === id ? {...todo, done: !todo.done} : todo;
+    })
+    console.log(this.todos);
   }
 
   addTodo(input: HTMLInputElement) {
+    if (!input.value) {
+      return;
+    }
     const newTodo : Todo = {
       id: Date.now(),
       title: input.value,
       done: false
     }
-    this.todos.push(newTodo);
+    // this.todos.push(newTodo);
+    this.todos = [...this.todos, newTodo];
     input.value = '';
   }
 
