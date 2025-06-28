@@ -110,9 +110,53 @@ const prodottiIniziali: Prodotti[] = [
         } @else {
           <div>Select a product</div>
         }
+      </div>
+
+    </div>
+
+      <!--        Todo List-->
+      <div class="flex flex-col gap-6 place-items-center border-t p-8 m-4">
+        <div>
+          {{totalCompleted()}} completed | {{totalTodo()}} todos
+        </div>
+        <div class="">
+          <input
+            type="text"
+            class="input"
+            (keydown.enter)="addTodo(event)"
+            #event
+            placeholder="Add todo"
+          >
+        </div>
+        <ul class="flex flex-col gap-2">
+          @for (todo of todos(); track todo.id) {
+          <li class="flex justify-between">
+            <div class="flex gap-3">
+              <input
+                type="checkbox"
+                class="checkbox"
+                [checked]="todo.completed"
+                (change)="toggleTodo(todo)"
+              >
+              <span [ngClass]="{ 'line-through': todo.completed}">
+                {{todo.title}}
+              </span>
+            </div>
+
+            <button class="ml-6 text-red-400" (click)="removeTodo(todo)">
+              X
+            </button>
+
+          </li>
+          }
+        </ul>
+
+        <pre>{{todos() | json}}</pre>
 
       </div>
-    </div>
+
+
+
 
   `,
   styles: `
@@ -162,4 +206,44 @@ export class App {
   caricaProdotti() {
     this.prodotti.set(prodottiIniziali)
   }
+
+
+  todos = signal<Todo[]>([
+    { id: 1, title: 'Todo 1', completed: true },
+    { id: 2, title: 'Todo 2', completed: false },
+    { id: 3, title: 'Todo 3', completed: true },
+  ])
+
+  toggleTodo(todoToToggle: Todo) {
+    this.todos.update(todos => {
+      return todos.map( t => t.id === todoToToggle.id ? { ...t, completed: !t.completed } : t )
+    })
+  }
+
+  removeTodo(todoToRemove: Todo) {
+    this.todos.update(todos => todos.filter(t => t.id !== todoToRemove.id))
+  }
+
+  addTodo(input: HTMLInputElement) {
+    const newTodo : Todo = {
+      id: Date.now(),
+      title: input.value,
+      completed: false
+    }
+    this.todos.update(todos => [...todos, newTodo])
+    input.value = ''
+
+  }
+
+  totalCompleted = computed( () => this.todos().filter(t => t.completed).length)
+  totalTodo = computed ( () => this.todos().filter( t => !t.completed).length)
+
+
+}
+
+
+interface Todo {
+  id: number;
+  title: string;
+  completed: boolean;
 }
