@@ -1,17 +1,41 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {NgClass} from '@angular/common';
+import {info} from 'sass';
+import {VariantIcon} from './variant-icon';
 
 @Component({
   selector: 'app-alert',
-  imports: [],
+  imports: [
+    NgClass,
+    VariantIcon
+  ],
   template: `
-    <div role="alert" class="alert alert-vertical sm:alert-horizontal">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info h-6 w-6 shrink-0">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      <span>Hola bro</span>
+    <div
+      role="alert"
+      class="alert alert-vertical sm:alert-horizontal"
+      [ngClass]="{
+      'alert-info': variant === 'info',
+      'alert-success': variant === 'success',
+      'alert-error': variant === 'error',
+      'alert-warning': variant === 'warning'
+      }"
+    >
+      <app-variant-icon [variant]="variant" />
+      <div><ng-content /></div>
       <div>
-        <button class="btn btn-sm" (click)="onCancel.emit()">Deny</button>
-        <button class="btn btn-sm btn-primary" (click)="onConfirm.emit()">Accept</button>
+        <button class="btn btn-sm" (click)="onCancel.emit()">{{ denyLabel }}</button>
+        <button
+          class="btn btn-sm btn-primary"
+          (click)="onConfirm.emit()"
+          [ngClass]="{
+            'btn-info': variant === 'info',
+            'btn-success': variant === 'success',
+            'btn-error': variant === 'error',
+            'btn-warning': variant === 'warning'
+          }"
+        >
+          {{ acceptLabel }}
+        </button>
       </div>
     </div>
   `,
@@ -20,5 +44,9 @@ import {Component, EventEmitter, Output} from '@angular/core';
 export class Alert {
   @Output() onCancel = new EventEmitter()
   @Output() onConfirm = new EventEmitter()
+  @Input() denyLabel = 'no'
+  @Input() acceptLabel = 'yes'
+  @Input() variant: 'info' | 'success' | 'error' | 'warning' | undefined;
 
+  protected readonly info = info;
 }

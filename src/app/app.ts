@@ -36,14 +36,30 @@ import {Alert} from './shared/components/alert';
 
 <!--        Alert-->
     <div class="flex flex-col p-6 gap-6">
+      <app-alert>msg</app-alert>
+      <app-alert variant="info">msg</app-alert>
+      <app-alert variant="success">msg</app-alert>
+      <app-alert variant="error">msg</app-alert>
       <app-alert
         (onCancel)="cancel()"
         (onConfirm)="approve()"
-      />
+        denyLabel="cancel"
+        acceptLabel="confirm"
+        variant="warning"
+      >
+        this is a message
+      </app-alert>
+
       <app-alert
         (onCancel)="cancel2()"
         (onConfirm)="approve2()"
-      />
+      >
+        <div class="flex flex-col gap-4">
+          <em>Hola </em>
+          <strong>bro</strong>
+          <input type="text" class="input input-bordered">
+        </div>
+      </app-alert>
     </div>
 
 
