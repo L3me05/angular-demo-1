@@ -1,28 +1,32 @@
 import {CommonModule} from '@angular/common';
 import {Component} from '@angular/core';
-import {Phone} from './shared/components/phone/phone';
+import {UserProfile} from './shared/components/user-profile/user-profile';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, Phone],
+  imports: [CommonModule, UserProfile],
   template: `
+    <div class="flex flex-col items-center justify-center p-8 gap-4 ">
+      <button class="btn text-xl" (click)="visible=!visible">Toggle</button>
+
+      <div class="flex items-center p-8 gap-5">
+        @if (visible) {
+          <button
+          class="btn text-2xl"
+          (click)="inc()"
+          >
+            +
+          </button>
+          <app-user-profile [id]="id"/>
+        }
+
+      </div>
 
 
-    <app-phone
-      [url]="wallpaper"
-      [alt]="alt"
-      showTitle
-      size="md"
-    />
-    <app-phone
-      [url]="wallpaper"
-      [alt]="alt"
-      showTitle
-      size="sm"
-    />
 
+    </div>
 
 
   `,
@@ -37,9 +41,16 @@ import {Phone} from './shared/components/phone/phone';
 
 
 export class App {
- wallpaper= '/images/wallpaper.jpg';
-  alt = 'wallpaper';
+  visible = true;
+  id=1;
 
+  inc() {
+    if(this.id<10) {
+      this.id++;
+    } else {
+      this.id=1;
+    }
+  }
 
 
 }
