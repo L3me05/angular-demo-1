@@ -3,12 +3,13 @@ import {Component} from '@angular/core';
 import {Timeline} from './shared/components/timeline';
 import {AccordionItem} from './shared/components/accordion-item';
 import {Alert} from './shared/components/alert';
+import {Dropdown, DropdownItem} from './shared/components/dropdown';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, Timeline, AccordionItem, Alert],
+  imports: [CommonModule, Timeline, AccordionItem, Alert, Dropdown],
   template: `
 <!--        timeline-->
     <div class="flex flex-col p-8 gap-4">
@@ -62,6 +63,19 @@ import {Alert} from './shared/components/alert';
       </app-alert>
     </div>
 
+<!--        Dropdown-->
+    <div class="flex justify-between p-8 m-10 border-t">
+      <app-dropdown
+        [items]="list"
+        (select)="doSomethingElse($event)"
+      >
+        BOTTOM
+      </app-dropdown>
+
+      <app-dropdown [items]="list" placement="right">RIGHT</app-dropdown>
+      <app-dropdown [items]="list" placement="top" hover>TOP H</app-dropdown>
+      <app-dropdown [items]="list" placement="left" hover>LEFT H</app-dropdown>
+    </div>
 
   `,
   styles: `
@@ -103,6 +117,16 @@ export class App {
 
   cancel2() {
     console.log("you are canceled")
+  }
+
+  list = [
+    { label: 'item 1', value: 1},
+    { label: 'item 2', value: 2},
+    { label: 'item 3', value: 'something'}
+  ]
+
+  doSomethingElse(event: DropdownItem) {
+    console.log('do something else', event)
   }
 
 
