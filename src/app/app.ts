@@ -1,6 +1,6 @@
 import {CommonModule} from '@angular/common';
-import {Component} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {Navbar} from './core/components/navbar';
 
 
@@ -16,18 +16,8 @@ import {Navbar} from './core/components/navbar';
     </div>
 
 
-
-
-
-
-
-
-
-
   `,
   styles: `
-
-
 
   `,
 
@@ -36,7 +26,14 @@ import {Navbar} from './core/components/navbar';
 
 
 export class App {
-
+  router = inject(Router);
+  constructor() {
+    this.router.events.subscribe( event => {
+      if(event instanceof NavigationEnd) {
+        console.log(event.url)
+      }
+    })
+  }
 
 
 

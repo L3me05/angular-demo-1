@@ -1,15 +1,24 @@
-import { Component } from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 
 @Component({
   selector: 'app-demo1',
   imports: [],
   template: `
     <p>
-      demo1 works!
+      {{ title }}
     </p>
   `,
   styles: ``
 })
-export class Demo1 {
+export default class Demo1 {
 
+
+  @Input() title= '';
+
+  // activateRoute = inject(ActivatedRoute)
+  // constructor() {
+  //   this.activateRoute.data.subscribe( res => {
+  //     this.title= res['title']
+  //   })
+  // }
 }
