@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 
 export const AuthGuard = () => {
   const router = inject(Router)
-  const isLogged = false;
+  const isLogged = true;
   if(!isLogged) {
     router.navigateByUrl('demo1')
   }
