@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 
-type Config {
+type Config = {
   title: string;
   color: string;
   enableShop: boolean;
