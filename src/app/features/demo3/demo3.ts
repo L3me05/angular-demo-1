@@ -1,48 +1,42 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { HttpError } from '../../shared/components/http-error';
+import { TodosSummary } from "./components/todos-summary";
+import { TodosForm } from "./components/todos-form";
+import { TodosList } from "./components/todos-list";
+import { Todo } from '../../model/todos';
+import { TodosService } from './services/todos.service';
 
 @Component({
   selector: 'app-demo3',
-  imports: [CommonModule],
+  providers: [
+    TodosService
+  ],
+  imports: [CommonModule, HttpError, TodosSummary, TodosForm, TodosList],
   template: `
     <div class="centered-page sm flex flex-col gap-3">
       <h1 class="page-title">Todo List</h1>
 
       @if (error()) {
-      <div class="bg-red-400 rounded-xl p-3 text-black">errore!</div>
+      <app-http-error>Server error </app-http-error>
       }
 
-      <!--RECAP-->
-      <div>{{ totalCompleted() }} completed | {{ totalTodos() }} todos</div>
-
-      <!--Form-->
-      <input
-        type="text"
-        class="input input-bordered"
-        #inputRef
-        (keydown.enter)="addTodo(inputRef)"
-        placeholder="add todo"
+      <app-todos-summary
+        [completed]="totalCompleted()"
+        [todos]="totalTodos()"
       />
-
-      <!--List-->
-      <ul>
-        @for (todo of todos(); track todo.id) {
-        <li class="flex justify-between">
-          <div class="flex gap-3">
-            <input
-              type="checkbox"
-              [checked]="todo.completed"
-              (change)="toggleTodo(todo)"
-            />
-            <span [ngClass]="{ 'line-through': todo.completed }">
-              {{ todo.title }}
-            </span>
-          </div>
-          <button (click)="removeTodo(todo)">❌</button>
-        </li>
-        }
-      </ul>
+      
+      <app-todos-form
+        (addTodo)="addTodo($event)"
+      />
+      
+      <app-todos-list
+        [todos]="todos()"
+        (toggleTodo)="toggleTodo($event)"
+        (removeTodo)="removeTodo($event)"
+      />
+      
     </div>
   `,
   styles: ``,
@@ -51,16 +45,18 @@ export class Demo3 implements OnInit {
   todos = signal<Todo[]>([]);
   http = inject(HttpClient);
   error = signal(false);
+  todosService = inject(TodosService);
 
   ngOnInit(): void {
-    this.http.get<Todo[]>(`http://localhost:3000/todos`).subscribe({
-      next: (res) => {
-        this.todos.set(res);
-      },
-      error: () => {
-        this.error.set(true);
-      },
-    });
+    this.todosService.load()
+      .subscribe({
+        next: (res) => {
+          this.todos.set(res);
+        },
+        error: () => {
+          this.error.set(true);
+        },
+      });
   }
 
   totalCompleted = computed(
@@ -70,11 +66,7 @@ export class Demo3 implements OnInit {
 
   addTodo(input: HTMLInputElement) {
     this.error.set(false);
-    this.http
-      .post<Todo>(`http://localhost:3000/todos`, {
-        title: input.value,
-        completed: false,
-      })
+    this.todosService.addTodo(input.value)
       .subscribe({
         next: (newTodo) => {
           this.todos.update((todos) => [...todos, newTodo]);
@@ -122,8 +114,4 @@ export class Demo3 implements OnInit {
   }
 }
 
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+
